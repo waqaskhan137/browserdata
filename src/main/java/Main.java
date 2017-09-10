@@ -1,3 +1,4 @@
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -41,11 +42,14 @@ public class Main {
             JSONObject jsonObject = (JSONObject) obj;
             System.out.println(jsonObject.size());
 
-            for (int i = 0; i < jsonObject.size(); i++) {
-                String title = (String) jsonObject.get("title");
-                String url = (String) jsonObject.get("url");
-                System.out.println("Title : "+title);
-                System.out.println("URL : "+url);
+            // loop array
+            JSONArray browserHistory = (JSONArray) jsonObject.get("history");
+            Iterator<JSONObject> iterator = browserHistory.iterator();
+            while (iterator.hasNext()) {
+
+                System.out.println(iterator.next().get("title"));
+                System.out.println(iterator.next().get("url"));
+                System.out.println(iterator.next().get("time_usec"));
             }
 
         } catch (Exception e) {
