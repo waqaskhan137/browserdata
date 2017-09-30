@@ -1,3 +1,5 @@
+package TestDB;
+
 import com.db.DB;
 import org.junit.Test;
 
