@@ -1,3 +1,6 @@
+package com.analysis;
+
+import com.db.DB;
 import opennlp.tools.sentdetect.SentenceDetectorME;
 import opennlp.tools.sentdetect.SentenceModel;
 import org.json.simple.JSONArray;
@@ -11,24 +14,32 @@ import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+// TODO: 28/09/2017 learn maven 
 
 // TODO: 20/09/2017 adding
 public class Main {
     DB mysqlConnect = new DB();
-    private String filePath = "/Users/rmw/IdeaProjects/browserdata/Takeout/Chrome";
+    File[] listOfFiles;
+    private String filePath = "/Users/rmw/IdeaProjects/browserdata/src/main/java/data/Takeout/Chrome";
 
-    public static void main(String args[]){
+    public static void main(String args[]) {
         Main mObj = new Main();
         mObj.dataExtract(mObj.fileNames());
     }
 
+    public File[] getListOfFiles() {
+        return listOfFiles;
+    }
+
+    // TODO: 28/09/2017 find all files in project of image and json.
     protected File[] fileNames() {
 
         File folder = new File(filePath);
-        File[] listOfFiles = folder.listFiles();
+        listOfFiles = folder.listFiles();
         if (listOfFiles != null) {
             return listOfFiles;
         }
+
         return null;
     }
 
@@ -46,20 +57,25 @@ public class Main {
 
             Object obj;
             obj = parser.parse(new FileReader(filePath));
-
             JSONObject jsonObject = (JSONObject) obj;
-            System.out.println(jsonObject.size());
 
             // loop array
             JSONArray browserHistory = (JSONArray) jsonObject.get("history");
-            for (JSONObject aBrowserHistory : (Iterable<JSONObject>) browserHistory) {
-                String title = (aBrowserHistory.get("title")).toString();
-                sentDetect(title);
+            for (JSONObject aBrowserHistory : (Iterable<JSONObject>) browserHistory)
+                try {
 
-//                System.out.println(iterator.next().get("title"));
-//                System.out.println(iterator.next().get("url"));
-//                System.out.println(iterator.next().get("time_usec"));
-            }
+                    String title = mysql_real_escape_string(aBrowserHistory.get("title").toString());
+                    String favicon_url = mysql_real_escape_string(aBrowserHistory.get("favicon_url").toString());
+                    String page_transition = mysql_real_escape_string(aBrowserHistory.get("page_transition").toString());
+                    String url = mysql_real_escape_string(aBrowserHistory.get("url").toString());
+                    String client_id = mysql_real_escape_string(aBrowserHistory.get("client_id").toString());
+                    String time_usec = mysql_real_escape_string((aBrowserHistory.get("time_usec")).toString());
+
+                    insertData(favicon_url, page_transition, title, url, client_id, time_usec);
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+
+                }
             System.out.println("Data Inserted, Closing MYSql Connection");
             mysqlConnect.disconnect();
 
@@ -88,6 +104,20 @@ public class Main {
 
         try {
             String sql = "INSERT INTO `sentDetect` (`sentence`) VALUES ('" + mysql_real_escape_string(sent) + "');";
+            PreparedStatement statement = mysqlConnect.connect().prepareStatement(sql);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void insertData(String favicon_url, String page_transition, String title, String url, String client_id, String time_usec) {
+
+
+        try {
+            String sql = "INSERT INTO `test_schema`.`c_history` (`favicon_url`, `page_transition`, `title`, `url`, `client_id`, `time_usec`) VALUES ('" + favicon_url + "', '" + page_transition + "', '" + title + "', '" + url + "', '" + client_id + "', '" + time_usec + "');";
             PreparedStatement statement = mysqlConnect.connect().prepareStatement(sql);
             statement.executeUpdate();
         } catch (SQLException e) {

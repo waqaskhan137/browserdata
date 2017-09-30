@@ -1,3 +1,5 @@
+package com.analysis.img;
+
 /* Copyright 2016 The TensorFlow Authors. All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,6 +46,7 @@ public class LabelImage {
         s.println("<image file> is the path to a JPEG image file");
     }
 
+    // TODO: 28/09/2017 implementing the load model and image files paths instead of arg[]
     public static void main(String[] args) {
         if (args.length != 2) {
             printUsage(System.err);
