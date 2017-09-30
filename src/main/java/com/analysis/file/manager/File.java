@@ -1,4 +1,4 @@
-package com.analysis;
+package com.analysis.file.manager;
 
 import java.util.ArrayList;
 
