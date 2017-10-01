@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 /**
  * @author Yasser Ganjisaffar
  */
+// TODO: 02/10/2017 saving the results in json format
 public class BasicCrawler extends WebCrawler {
 
     private static final Pattern IMAGE_EXTENSIONS = Pattern.compile(".*\\.(bmp|gif|jpg|png)$");

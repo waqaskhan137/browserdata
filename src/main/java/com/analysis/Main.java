@@ -14,7 +14,7 @@ import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-// TODO: 28/09/2017 learn maven 
+// TODO: 28/09/2017 learn maven in depth
 
 // TODO: 20/09/2017 adding
 public class Main {
